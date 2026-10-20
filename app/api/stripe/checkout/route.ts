@@ -1,3 +1,4 @@
+import { siteUrl } from "@/lib/site";
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { z } from "zod";
@@ -9,7 +10,7 @@ const Body = z.object({ plan: z.enum(["standard", "pro"]) });
 export async function POST(req: Request) {
   const form = await req.formData();
   const parsed = Body.safeParse({ plan: form.get("plan") });
-  const site = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(req.url).origin;
+  const site = siteUrl(req);
   if (!parsed.success) return NextResponse.redirect(`${site}/pricing?error=plan`, 303);
 
   const viewer = await getViewer();

@@ -65,6 +65,7 @@ export function RatioTrendChart({ companies, allRatios }: { companies: ComparedC
                 strokeWidth={2.5}
                 fill={`url(#area-${i})`}
                 connectNulls
+                isAnimationActive={false}
                 dot={{ r: 2.5, strokeWidth: 0, fill: SERIES_COLORS[i] }}
                 activeDot={{ r: 5, stroke: "#050b1a", strokeWidth: 2 }}
               />

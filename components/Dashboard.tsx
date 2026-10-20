@@ -53,7 +53,8 @@ export function Dashboard({
 
   const load = useCallback(async (t: string[], p: Period) => {
     const qs = `tickers=${t.join(",")}&period=${p}`;
-    router.replace(`/?${qs}`, { scroll: false });
+    // Update the shareable URL without a server round trip (router.replace would re-render the page on the server).
+    window.history.replaceState(null, "", `/?${qs}`);
     if (t.length < 2) {
       setError({ message: "Add at least two companies to compare.", upgrade: false });
       return;
@@ -70,7 +71,7 @@ export function Dashboard({
     } finally {
       setLoading(false);
     }
-  }, [router]);
+  }, []);
 
   useEffect(() => {
     load(tickers, period);

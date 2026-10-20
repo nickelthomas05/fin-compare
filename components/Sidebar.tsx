@@ -33,6 +33,7 @@ export function Sidebar({ plan, email, authEnabled }: { plan: PlanId; email: str
           return (
             <Link
               key={href}
+              prefetch={false}
               href={href}
               className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition ${
                 active ? "glass-glow bg-blue/15 text-fg" : "text-muted hover:bg-white/5 hover:text-fg"
@@ -95,6 +96,7 @@ export function MobileNav() {
         return (
           <Link
             key={href}
+            prefetch={false}
             href={href}
             className={`flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs ${active ? "bg-blue/25 text-fg" : "text-muted"}`}
           >

@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { z } from "zod";
+import { siteUrl } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
 
 const Creds = z.object({ email: z.email(), password: z.string().min(8, "Password must be at least 8 characters") });
@@ -16,7 +17,7 @@ export async function authenticate(_: string | null, form: FormData): Promise<st
   const supabase = await createClient();
   const mode = form.get("mode");
   if (mode === "signup") {
-    const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL;
+    const origin = process.env.VERCEL_ENV === "production" ? siteUrl() : ((await headers()).get("origin") ?? siteUrl());
     const { data, error } = await supabase.auth.signUp({ ...parsed.data, options: { emailRedirectTo: `${origin}/` } });
     if (error) return error.message;
     if (!data.session) return "Check your email to confirm your account, then sign in.";

@@ -1,9 +1,10 @@
+import { siteUrl } from "@/lib/site";
 import { NextResponse } from "next/server";
 import { getViewer } from "@/lib/session";
 import { ensureCustomer, getStripe } from "@/lib/stripe";
 
 async function portal(req: Request) {
-  const site = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(req.url).origin;
+  const site = siteUrl(req);
   const viewer = await getViewer();
   if (!viewer.user) return NextResponse.redirect(`${site}/login?next=/account`, 303);
   try {

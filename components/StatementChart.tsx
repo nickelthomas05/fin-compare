@@ -52,7 +52,7 @@ export function StatementChart({ companies }: { companies: ComparedCompany[] }) 
             <Tooltip {...tooltipStyle} formatter={(v) => fmtUSD(v as number)} />
             <Legend iconType="circle" wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
             {companies.map((c, i) => (
-              <Bar key={c.ticker} dataKey={c.ticker} fill={`url(#bar-${i})`} radius={[6, 6, 0, 0]} maxBarSize={28} />
+              <Bar key={c.ticker} dataKey={c.ticker} fill={`url(#bar-${i})`} radius={[6, 6, 0, 0]} maxBarSize={28} isAnimationActive={false} />
             ))}
           </BarChart>
         </ResponsiveContainer>

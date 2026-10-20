@@ -39,7 +39,7 @@ export function RatioRadar({ companies }: { companies: ComparedCompany[] }) {
             <PolarGrid stroke="rgba(96,140,255,0.15)" />
             <PolarAngleAxis dataKey="axis" tick={{ fill: "#8b9cc7", fontSize: 11 }} />
             {companies.map((c, i) => (
-              <Radar key={c.ticker} dataKey={c.ticker} stroke={SERIES_COLORS[i]} fill={SERIES_COLORS[i]} fillOpacity={0.15} strokeWidth={2} />
+              <Radar key={c.ticker} dataKey={c.ticker} stroke={SERIES_COLORS[i]} fill={SERIES_COLORS[i]} fillOpacity={0.15} strokeWidth={2} isAnimationActive={false} />
             ))}
             <Tooltip
               {...tooltipStyle}

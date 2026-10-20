@@ -26,24 +26,32 @@ body {
 }
 
 body {
+  min-height: 100vh;
+}
+
+/* Glow backdrop on its own fixed layer: composited once instead of repainted on every scroll. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background:
     radial-gradient(1200px 600px at 15% -10%, rgb(59 130 246 / 0.16), transparent 60%),
     radial-gradient(900px 500px at 100% 0%, rgb(139 108 255 / 0.12), transparent 60%),
     radial-gradient(800px 600px at 50% 110%, rgb(46 230 197 / 0.07), transparent 60%),
     var(--color-ink);
-  background-attachment: fixed;
-  min-height: 100vh;
 }
 
 @layer components {
   .glass {
-    background: linear-gradient(180deg, rgb(20 36 78 / 0.55), rgb(10 20 48 / 0.55));
+    /* Near-opaque fill gives the frosted look without a per-frame backdrop-filter. */
+    background: linear-gradient(180deg, rgb(19 33 72 / 0.82), rgb(10 19 45 / 0.86));
     border: 1px solid var(--color-edge);
     border-radius: 1rem;
     box-shadow:
       inset 0 1px 0 rgb(255 255 255 / 0.04),
       0 10px 40px -20px rgb(0 0 0 / 0.8);
-    backdrop-filter: blur(14px);
   }
   .glass-glow {
     border-color: var(--color-edge-strong);
