@@ -90,7 +90,7 @@ export function Sidebar({ plan, email, authEnabled }: { plan: PlanId; email: str
 export function MobileNav() {
   const path = usePathname();
   return (
-    <nav className="no-print glass mb-4 flex items-center gap-1 overflow-x-auto p-1.5 md:hidden">
+    <nav className="no-print glass mb-4 flex items-center gap-1 overflow-x-auto p-1.5 [scrollbar-width:none] md:hidden">
       {NAV.map(({ href, label, icon: Icon }) => {
         const active = href === "/" ? path === "/" : path.startsWith(href);
         return (
