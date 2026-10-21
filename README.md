@@ -4,6 +4,8 @@
 
 Applied Finance & FinTech prototype · Built with Claude Code · Next.js 15, TypeScript, Supabase, Stripe, Recharts
 
+**Live demo:** https://fin-compare-plum.vercel.app
+
 ## Requirements → features
 
 | Requirement | Where it lives |
@@ -87,6 +89,10 @@ cp .env.example .env.local   # then fill in the values below
    ```
 
 Test card: `4242 4242 4242 4242`, any future date, any CVC.
+
+### Deploying to Vercel
+
+Import the repo at vercel.com/new and paste the variables from `.env.local`. **If Vercel's Stripe or Supabase marketplace integration is attached to the project, it replaces `STRIPE_SECRET_KEY` and `NEXT_PUBLIC_SUPABASE_*` with keys for accounts it created.** Set `FINCOMPARE_STRIPE_SECRET_KEY`, `FINCOMPARE_SUPABASE_URL`, `FINCOMPARE_SUPABASE_ANON_KEY` and `FINCOMPARE_SUPABASE_SERVICE_ROLE_KEY`, which take priority (`lib/env.ts`). `GET /api/health` reports which Stripe account and Supabase project the deployment is using (IDs only). Create a Stripe webhook endpoint for `https://<your-domain>/api/stripe/webhook` and set `STRIPE_WEBHOOK_SECRET`.
 
 ### Stripe Tax
 
