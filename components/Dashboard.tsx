@@ -6,9 +6,13 @@ import { useRouter } from "next/navigation";
 import { Bookmark, CalendarRange, Download, FileText, Loader2, Lock, Info } from "lucide-react";
 import type { ComparePayload } from "@/lib/company";
 import type { Plan } from "@/lib/plans";
+import { CapitalStructureChart } from "./CapitalStructureChart";
+import { CashVsProfitChart } from "./CashVsProfitChart";
 import { CompanyPicker } from "./CompanyPicker";
+import { GrowthIndexChart } from "./GrowthIndexChart";
 import { InsightsPanel } from "./InsightsPanel";
 import { KpiTiles } from "./KpiTiles";
+import { MarginProfileChart } from "./MarginProfileChart";
 import { RatioRadar } from "./RatioRadar";
 import { RatioTable } from "./RatioTable";
 import { RatioTrendChart } from "./RatioTrendChart";
@@ -195,9 +199,15 @@ export function Dashboard({
               <RatioRadar companies={data.companies} />
             </div>
           </div>
-          <div className="grid gap-5 xl:grid-cols-5">
-            <div className="xl:col-span-3">
+          <div className="grid items-start gap-5 xl:grid-cols-5">
+            <div className="space-y-5 xl:col-span-3">
               <RatioTrendChart companies={data.companies} allRatios={plan.allRatioTrends} />
+              <GrowthIndexChart companies={data.companies} />
+              <MarginProfileChart companies={data.companies} />
+              <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
+                <CapitalStructureChart companies={data.companies} />
+                <CashVsProfitChart companies={data.companies} />
+              </div>
             </div>
             <div className="xl:col-span-2">
               <InsightsPanel insights={data.insights} />
