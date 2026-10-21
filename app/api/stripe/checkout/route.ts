@@ -19,14 +19,19 @@ export async function POST(req: Request) {
   // Existing subscribers change plans in the Customer Portal (prorated) instead of opening a second subscription.
   if (viewer.subscription) return NextResponse.redirect(`${site}/api/stripe/portal`, 303);
 
+  // Which step failed is surfaced on the pricing page (no secrets), so misconfiguration is diagnosable without logs.
+  let step = "customer";
   try {
     const customer = await ensureCustomer(viewer.user.id, viewer.user.email);
+    step = "price";
+    const price = await priceIdFor(parsed.data.plan);
+    step = "session";
     const automaticTax = process.env.STRIPE_AUTOMATIC_TAX === "true";
     const params: Stripe.Checkout.SessionCreateParams = {
       mode: "subscription",
       customer,
       client_reference_id: viewer.user.id,
-      line_items: [{ price: await priceIdFor(parsed.data.plan), quantity: 1 }],
+      line_items: [{ price, quantity: 1 }],
       success_url: `${site}/account?checkout=success`,
       cancel_url: `${site}/pricing?checkout=canceled`,
       allow_promotion_codes: true,
@@ -40,7 +45,8 @@ export async function POST(req: Request) {
     const session = await getStripe().checkout.sessions.create(params);
     return NextResponse.redirect(session.url!, 303);
   } catch (err) {
-    console.error("[stripe] checkout failed", err);
-    return NextResponse.redirect(`${site}/pricing?error=checkout`, 303);
+    console.error(`[stripe] checkout failed at ${step}`, err);
+    const reason = err instanceof Error ? err.message.split(":")[0].slice(0, 60) : "unknown";
+    return NextResponse.redirect(`${site}/pricing?error=checkout&step=${step}&reason=${encodeURIComponent(reason)}`, 303);
   }
 }

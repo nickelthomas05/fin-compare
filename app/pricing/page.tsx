@@ -18,7 +18,17 @@ export default async function Pricing({ searchParams }: { searchParams: Promise<
       </header>
 
       {sp.checkout === "canceled" && <p className="glass p-3 text-sm text-muted">Checkout canceled — you haven&apos;t been charged.</p>}
-      {sp.error && <p className="glass border-down/40 p-3 text-sm text-down">Something went wrong starting checkout. Please try again.</p>}
+      {sp.error && (
+        <p className="glass border-down/40 p-3 text-sm text-down">
+          Something went wrong starting checkout. Please try again.
+          {sp.step && (
+            <span className="mt-1 block text-xs text-muted">
+              Failed step: {sp.step}
+              {sp.reason && ` — ${sp.reason}`}
+            </span>
+          )}
+        </p>
+      )}
 
       <div className="grid gap-5 lg:grid-cols-3">
         {PLAN_ORDER.map((id) => {
