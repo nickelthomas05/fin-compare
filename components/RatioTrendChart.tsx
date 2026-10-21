@@ -76,7 +76,7 @@ export function RatioTrendChart({ companies, allRatios }: { companies: ComparedC
       <p className="mt-2 text-xs text-muted">{def.meaning}</p>
       {!allRatios && (
         <p className="mt-2 flex items-center gap-1.5 text-xs text-dim">
-          <Lock className="size-3" /> 9 more ratio trends on{" "}
+          <Lock className="size-3" /> {RATIOS.filter((r) => !r.core).length} more ratio trends on{" "}
           <Link href="/pricing" className="text-cyan hover:underline">
             Pro
           </Link>

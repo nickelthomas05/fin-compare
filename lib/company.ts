@@ -54,7 +54,7 @@ export async function loadCompany(ticker: string): Promise<CompanyData> {
     annual: withRatios(annualRows(facts), "annual"),
     quarterly: withRatios(quarterlyRows(facts), "quarterly"),
   };
-  if (company.annual.length === 0) throw new UserError(`${t} has no annual financial statements in SEC XBRL data.`);
+  if (company.annual.length === 0) throw new UserError(`${t} has no annual US-GAAP statements in SEC data. Foreign companies that report under IFRS (Form 20-F) aren't supported.`);
 
   if (admin) {
     await admin
