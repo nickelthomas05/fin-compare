@@ -1,11 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { env } from "./lib/env";
 
 // Refreshes the Supabase auth session cookie on each request.
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = env.supabaseUrl;
+  const anon = env.supabaseAnonKey;
   if (!url || !anon) return response;
 
   const supabase = createServerClient(url, anon, {

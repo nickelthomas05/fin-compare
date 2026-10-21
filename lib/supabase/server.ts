@@ -2,14 +2,15 @@ import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { createClient as createJsClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
+import { env } from "../env";
 
 export const supabaseConfigured = () =>
-  Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  Boolean(env.supabaseUrl && env.supabaseAnonKey);
 
 /** Request-scoped client acting as the signed-in user (RLS applies). */
 export async function createClient() {
   const store = await cookies();
-  return createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+  return createServerClient(env.supabaseUrl!, env.supabaseAnonKey!, {
     cookies: {
       getAll: () => store.getAll(),
       setAll: (list) => {
@@ -25,7 +26,7 @@ export async function createClient() {
 
 /** Service-role client for webhooks and caches. Never expose to the browser. */
 export function createAdminClient() {
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !key) return null;
-  return createJsClient(process.env.NEXT_PUBLIC_SUPABASE_URL, key, { auth: { persistSession: false } });
+  const key = env.supabaseServiceKey;
+  if (!env.supabaseUrl || !key) return null;
+  return createJsClient(env.supabaseUrl, key, { auth: { persistSession: false } });
 }

@@ -1,6 +1,7 @@
 import type Stripe from "stripe";
 import { NextResponse } from "next/server";
 import { getStripe, subscriptionForPaymentIntent, syncSubscription } from "@/lib/stripe";
+import { env } from "@/lib/env";
 import { createAdminClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
@@ -8,7 +9,7 @@ export const runtime = "nodejs";
 const idOf = (ref: string | { id: string } | null | undefined) => (typeof ref === "string" ? ref : (ref?.id ?? null));
 
 export async function POST(req: Request) {
-  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+  const secret = env.stripeWebhookSecret;
   const signature = req.headers.get("stripe-signature");
   if (!secret || !signature) return NextResponse.json({ error: "Webhook not configured" }, { status: 400 });
 

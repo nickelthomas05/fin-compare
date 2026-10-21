@@ -1,5 +1,6 @@
 import "server-only";
 import Stripe from "stripe";
+import { env } from "./env";
 import { planForLookupKey, PLANS, type PlanId } from "./plans";
 import { createAdminClient } from "./supabase/server";
 
@@ -7,13 +8,13 @@ let client: Stripe | null = null;
 
 /** Shared Stripe client instance (pinned to the SDK's API version). */
 export function getStripe(): Stripe {
-  const key = process.env.STRIPE_SECRET_KEY;
+  const key = env.stripeSecretKey;
   if (!key) throw new Error("STRIPE_SECRET_KEY is not set");
   client ??= new Stripe(key, { appInfo: { name: "FinCompare" } });
   return client;
 }
 
-export const stripeConfigured = () => Boolean(process.env.STRIPE_SECRET_KEY);
+export const stripeConfigured = () => Boolean(env.stripeSecretKey);
 
 /** Tags Checkout Sessions from the pricing page so the flow can be tracked in the Dashboard. */
 export const CHECKOUT_INTEGRATION_ID = "fincompare_pricing_qhtwzmke";
