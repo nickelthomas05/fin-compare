@@ -18,7 +18,10 @@ export async function getProfile(ticker: string): Promise<Profile | null> {
   const key = process.env.FINNHUB_API_KEY;
   if (!key) return null;
   const get = async (path: string) => {
-    const res = await fetch(`${BASE}${path}${path.includes("?") ? "&" : "?"}token=${key}`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${BASE}${path}${path.includes("?") ? "&" : "?"}token=${key}`, {
+      next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(5_000),
+    });
     return res.ok ? res.json() : null;
   };
   try {

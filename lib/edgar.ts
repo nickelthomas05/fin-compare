@@ -10,7 +10,12 @@ const memo = new Map<string, { at: number; value: unknown }>();
 async function secJson<T>(url: string): Promise<T> {
   const hit = memo.get(url);
   if (hit && Date.now() - hit.at < TTL_MS) return hit.value as T;
-  const res = await fetch(url, { headers: { "User-Agent": UA, Accept: "application/json" }, cache: "no-store" });
+  // Time out instead of hanging the request if SEC is slow or unreachable.
+  const res = await fetch(url, {
+    headers: { "User-Agent": UA, Accept: "application/json" },
+    cache: "no-store",
+    signal: AbortSignal.timeout(20_000),
+  });
   if (!res.ok) throw new Error(`SEC request failed (${res.status}) for ${url}`);
   const value = (await res.json()) as T;
   memo.set(url, { at: Date.now(), value });

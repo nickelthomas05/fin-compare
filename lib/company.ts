@@ -24,14 +24,29 @@ export async function loadCompany(ticker: string): Promise<CompanyData> {
   const t = ticker.trim().toUpperCase();
   const admin = createAdminClient();
 
+  let cached: CompanyData | null = null;
   if (admin) {
     const { data } = await admin.from("company_financials").select("data, fetched_at").eq("ticker", t).maybeSingle();
-    if (data && Date.now() - Date.parse(data.fetched_at) < CACHE_HOURS * 3_600_000) return data.data as CompanyData;
+    if (data) {
+      cached = data.data as CompanyData;
+      if (Date.now() - Date.parse(data.fetched_at) < CACHE_HOURS * 3_600_000) return cached;
+    }
   }
 
-  const entry = await findTicker(t);
-  if (!entry) throw new UserError(`Unknown ticker "${t}". Pick a US-listed company that files with the SEC.`);
-  const facts = await getCompanyFacts(entry.cik);
+  let entry: Awaited<ReturnType<typeof findTicker>>;
+  let facts: Awaited<ReturnType<typeof getCompanyFacts>>;
+  try {
+    entry = await findTicker(t);
+    if (!entry) throw new UserError(`Unknown ticker "${t}". Pick a US-listed company that files with the SEC.`);
+    facts = await getCompanyFacts(entry.cik);
+  } catch (err) {
+    if (err instanceof UserError) throw err;
+    // SEC unavailable: fall back to the last cached copy, however old, rather than failing.
+    if (cached) return cached;
+    if (err instanceof Error && /\(404\)/.test(err.message))
+      throw new UserError(`${t} has no XBRL financial data at the SEC. Foreign companies that file 20-F or 40-F reports aren't supported.`);
+    throw err;
+  }
   const company: CompanyData = {
     ticker: t,
     cik: entry.cik,
